@@ -35,8 +35,8 @@ Future<Database> initDb() async {
         "CREATE TABLE $contactTable( $idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn"
             " $phoneColumn TEXT, $imgColumn TEXT)"
     );
-  })
-  );
+  });
+
 }
 
 class Contact {
