@@ -15,37 +15,46 @@ class ContactHelper {
 
   ContactHelper.internal();
 
-  Database? _db;
+  Database _db;
 
-  Future<Database?> get db async {
-    if (_db == null) {
+  Future<Database> get db async {
+    if(_db != null){
+      return _db;
+    } else {
       _db = await initDb();
+      return _db;
     }
-    return _db;
+  }
+  Future<Database> initDb() async {
+    final databasesPath = await getDatabasesPath();
+    final path = join(databasesPath, "contactsnew.db");
+
+    return await openDatabase(path, version: 1, onCreate: (Database db, int newerVersion) async {
+      await db.execute(
+          "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT,"
+              "$phoneColumn TEXT, $imgColumn TEXT)"
+      );
+    });
   }
 
+  Future<Contact> saveContact(Contact contact) async {
+    Database dbContact = await db ;
+    contact.id = await dbContact.insert(contactTable, contact.toMap());
+    return contact;
+  }
 }
 
-Future<Database> initDb() async {
-  final dataBasePath = await getDatabasesPath();
-  final path = join(dataBasePath, "contacts.bd");
-  return openDatabase(
-      path, version: 1, onCreate: (Database db, int newerVersion) async {
-    await db.execute(
-        "CREATE TABLE $contactTable( $idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn"
-            " $phoneColumn TEXT, $imgColumn TEXT)"
-    );
-  });
 
-}
 
 class Contact {
 
-  int? id;
-  String? name;
-  String? phone;
-  String? email;
-  String? img;
+  int id;
+  String name;
+  String phone;
+  String email;
+  String img;
+
+  Contact();
 
   Contact.fromMap(Map map){
     id = map[idColumn];
@@ -55,13 +64,14 @@ class Contact {
     img = map[imgColumn];
   }
 
-  Map toMap(Contact c) {
-    Map map = Map();
-    map[nameColumn] = name;
-    map[phoneColumn] = phone;
-    map[emailColumn] = email;
-    map[imgColumn] = img;
-    if (id != null) {
+  Map toMap() {
+    Map<String, dynamic> map = {
+      nameColumn: name,
+      emailColumn: email,
+      phoneColumn: phone,
+      imgColumn: img
+    };
+    if(id != null){
       map[idColumn] = id;
     }
     return map;
