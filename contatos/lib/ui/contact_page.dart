@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:contatos/helper/contact_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ContactPage extends StatefulWidget {
   final Contact? contact;
@@ -13,6 +14,12 @@ class ContactPage extends StatefulWidget {
 }
 
 class _ContactPageState extends State<ContactPage> {
+
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+
+  bool _userEdited = false;
   Contact? _editedContact;
 
   @override
@@ -24,6 +31,11 @@ class _ContactPageState extends State<ContactPage> {
       }else{
         //duplica o contato (copia) 
         _editedContact = Contact.fromMap( widget.contact!.toMap());
+
+        //inicializa campos da tela com valores recebidos
+        _nameController.text =  _editedContact!.name.toString();
+        _emailController.text = _editedContact!.email.toString();
+        _phoneController.text = _editedContact!.phone.toString();
       }
 
   }
@@ -62,10 +74,31 @@ class _ContactPageState extends State<ContactPage> {
             TextField(
               decoration: InputDecoration(labelText: "Nome" ),
               onChanged: (text){
-
+                _userEdited = true;
+                setState(() {
+                  _editedContact!.name = text;
+                });
               },
+              controller: _nameController,
             ),
-
+            TextField(
+              decoration: InputDecoration(labelText: "Email"),
+              onChanged: (text){
+                _userEdited = true;
+                _editedContact!.email = text;
+              },
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: "Telefone"),
+              onChanged: (text){
+                _userEdited = true;
+                _editedContact!.phone = text;
+              },
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+            )
           ],
         )
         ,
