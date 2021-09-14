@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:contatos/helper/contact_helper.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +30,48 @@ class _ContactPageState extends State<ContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text(_editedContact!.name ?? "Novo Contato"),
+        centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){},
+        child: Icon(Icons.save),
+        backgroundColor: Colors.red,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            GestureDetector(
+              child: Container(
+                width: 140.0,
+                height: 140.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: _editedContact!.img != null
+                        ? FileImage(File(_editedContact!.img.toString()))
+                        : AssetImage("images/person.png") as ImageProvider,
+                  ),
+                ),
+              ),
+            ),
+            TextField(
+              decoration: InputDecoration(labelText: "Nome" ),
+              onChanged: (text){
+
+              },
+            ),
+
+          ],
+        )
+        ,
+      ),
+    );
+
   }
 
 
