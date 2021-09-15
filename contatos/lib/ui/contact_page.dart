@@ -22,6 +22,8 @@ class _ContactPageState extends State<ContactPage> {
   bool _userEdited = false;
   Contact? _editedContact;
 
+  final _focusName = FocusNode();
+
   @override
   void initState() {
       super.initState();
@@ -49,7 +51,15 @@ class _ContactPageState extends State<ContactPage> {
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          //verifica nulo e vazio
+          if(_editedContact!.name !=null &&  _editedContact!.name!.isNotEmpty ){
+              Navigator.pop(context,_editedContact);
+          }else{
+            //focus no campo inputText
+            FocusScope.of(context).requestFocus(_focusName);
+          }
+        },
         child: Icon(Icons.save),
         backgroundColor: Colors.red,
       ),
@@ -79,6 +89,7 @@ class _ContactPageState extends State<ContactPage> {
                   _editedContact!.name = text;
                 });
               },
+              focusNode: _focusName,
               controller: _nameController,
             ),
             TextField(
