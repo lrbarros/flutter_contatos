@@ -35,9 +35,9 @@ class _ContactPageState extends State<ContactPage> {
         _editedContact = Contact.fromMap( widget.contact!.toMap());
 
         //inicializa campos da tela com valores recebidos
-        _nameController.text =  _editedContact!.name.toString();
-        _emailController.text = _editedContact!.email.toString();
-        _phoneController.text = _editedContact!.phone.toString();
+        _nameController.text =  _editedContact!.name ?? "";
+        _emailController.text = _editedContact!.email ?? "";
+        _phoneController.text = _editedContact!.phone ?? "";
       }
 
   }
