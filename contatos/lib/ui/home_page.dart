@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:contatos/helper/contact_helper.dart';
 import 'package:contatos/ui/contact_page.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -120,7 +121,15 @@ class _HomePageState extends State<HomePage> {
                           primary: Colors.white,
                           elevation: 0,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          if(contacts[index].phone !=null && contacts[index].phone!.isNotEmpty ) {
+                            launch("tel:" + contacts[index].phone!);
+                            Navigator.pop(context);
+                          }else {
+                            _alertPhone();
+                          }
+
+                        },
                         child: Text(
                           "Ligar",
                           style: TextStyle(color: Colors.red, fontSize: 20.0),
@@ -196,4 +205,24 @@ class _HomePageState extends State<HomePage> {
       });
     });
   }
+
+void _alertPhone() {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Nenhum telefone cadastrado!!"),
+              content: Text("Por favor cadastre um telefone"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    child: Text("Fechar")),
+              ],
+            );
+          },
+        );
+      }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:contatos/helper/contact_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ContactPage extends StatefulWidget {
   final Contact? contact;
@@ -80,6 +81,18 @@ class _ContactPageState extends State<ContactPage> {
                       ),
                     ),
                   ),
+                  onTap: () {
+                    //para uso da camera   ImagePicker().pickImage(source: ImageSource.camera)....
+                    ImagePicker().pickImage(source: ImageSource.gallery).then((file) {
+                        if(file == null){
+                          return;
+                        }else{
+                         setState(() {
+                           _editedContact!.img = file.path;
+                         });
+                        }
+                    });
+                  },
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: "Nome"),
@@ -137,7 +150,6 @@ class _ContactPageState extends State<ContactPage> {
                     Navigator.pop(context);
                   },
                   child: Text("Cancelar")),
-
             ],
           );
         },
