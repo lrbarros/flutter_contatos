@@ -5,6 +5,8 @@ import 'package:contatos/ui/contact_page.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+enum OrderOptions { orderAz, orderZa }
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -32,6 +34,23 @@ class _HomePageState extends State<HomePage> {
         ),
         centerTitle: true,
         backgroundColor: Colors.red,
+        actions: [
+          PopupMenuButton<OrderOptions>(
+            itemBuilder: (context) {
+              return <PopupMenuEntry<OrderOptions>>[
+                const PopupMenuItem(
+                  child: Text("Ordenar de A-Z"),
+                  value: OrderOptions.orderAz,
+                ),
+                const PopupMenuItem(
+                  child: Text("Ordenar de Z-A"),
+                  value: OrderOptions.orderZa,
+                ),
+              ];
+            },
+            onSelected: _orderList,
+          ),
+        ],
       ),
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
@@ -122,13 +141,13 @@ class _HomePageState extends State<HomePage> {
                           elevation: 0,
                         ),
                         onPressed: () {
-                          if(contacts[index].phone !=null && contacts[index].phone!.isNotEmpty ) {
+                          if (contacts[index].phone != null &&
+                              contacts[index].phone!.isNotEmpty) {
                             launch("tel:" + contacts[index].phone!);
                             Navigator.pop(context);
-                          }else {
+                          } else {
                             _alertPhone();
                           }
-
                         },
                         child: Text(
                           "Ligar",
@@ -160,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                           primary: Colors.white,
                           elevation: 0,
                         ),
-                        onPressed: (){
+                        onPressed: () {
                           helper.deleteContact(contacts[index].id!);
                           setState(() {
                             contacts.removeAt(index);
@@ -206,23 +225,42 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-void _alertPhone() {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Nenhum telefone cadastrado!!"),
-              content: Text("Por favor cadastre um telefone"),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: Text("Fechar")),
-              ],
-            );
-          },
+  void _alertPhone() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Nenhum telefone cadastrado!!"),
+          content: Text("Por favor cadastre um telefone"),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: Text("Fechar")),
+          ],
         );
-      }
+      },
+    );
+  }
+
+  void _orderList(OrderOptions result) {
+    switch (result) {
+      case OrderOptions.orderAz:
+        setState(() {
+          contacts.sort((a, b) {
+            return a.name!.toLowerCase().compareTo(b.name!.toLowerCase());
+          });
+        });
+        break;
+      case OrderOptions.orderZa:
+        setState(() {
+          contacts.sort((a, b) {
+            return b.name!.toLowerCase().compareTo(a.name!.toLowerCase());
+          });
+        });
+        break;
+    }
+  }
 }
